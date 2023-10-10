@@ -83,14 +83,17 @@ async function fetchData() {
   // Check if file needs to be rewritten
   if (!manager.fileExists(file) || currentDate - updatedDate >= dayValue) {
     data = await requestQuote();
-    manager.writeString(file, JSON.stringify(data));
+    
+    if (data != null) {
+      await manager.writeString(file, JSON.stringify(data));
+    }
   } else {
     // Check if existent file needs to be downloaded
     if (!manager.isFileDownloaded(file)) {
       await manager.downloadFileFromiCloud(file);
     }
 
-    data = JSON.parse(manager.readString(file));
+    data = await JSON.parse(manager.readString(file));
   }
 
   return data;
